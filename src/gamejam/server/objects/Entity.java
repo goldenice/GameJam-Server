@@ -1,15 +1,15 @@
 package gamejam.server.objects;
 
-public class GameObject {
+public class Entity {
 	
 	private World objyard;
-	private int objectId;
+	private int identifier;
 	private String type;
 	
-	public GameObject(String type) {
+	public Entity(String type) {
 		this.type = type;
 		objyard = World.getInstance();
-		objectId = getObjectYard().register(this);
+		identifier = getObjectYard().register(this);
 	}
 	
 	protected World getObjectYard() {
@@ -17,7 +17,7 @@ public class GameObject {
 	}
 	
 	public int getObjectId() {
-		return objectId;
+		return identifier;
 	}
 	
 	public String getType() {
