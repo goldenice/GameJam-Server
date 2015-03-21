@@ -9,52 +9,32 @@ import java.util.ArrayList;
 
 public class Server {
 
-	/******************* MAGIC STATIC LINE *******************/
-	
-	private static Server main;
-	
-	public static void main(String[] args) {
-		ServerSocket server;
-		try {
-			server = new ServerSocket(6969);
-			Server.main = new Server(server);
-			Server.main.listen();
-		} catch (IOException e) {
-			System.err.println("Could not open socket");
-		} catch (Exception e) {
-			System.err.println("Unhandled exception!");
-			e.printStackTrace();
-		}
-	}
-	
-	public static Server getServer() {
-		return Server.main;
-	}
-	
+	public static final int LISTEN_PORT = 6969;
 
-	/******************* END MAGIC STATIC LINE ***************/
-	
-	
-	public Server(ServerSocket server) {
-		this.server = server;
+	private ServerSocket serverSocket;
+	private ArrayList<Client> clients = new ArrayList<Client>();
+	private boolean running = true;
+
+	public Server(ServerSocket serverSocket) {
+		this.serverSocket = serverSocket;
 	}
 	
-	private ServerSocket server;
-	private ArrayList<Client> clients = new ArrayList<Client>();
-	private boolean execute = true;
-	
-	public void listen() {
+	public void start() {
 		try {
-			while (execute) {
-				Socket sock = server.accept();
-				Client newclient = new Client(sock);
-				new Thread(newclient).start();
-				clients.add(newclient);
+			while (running) {
+				Socket sock = serverSocket.accept();
+				Client client = new Client(sock);
+				new Thread(client).start();
+				clients.add(client);
 			}
 		} catch (IOException e) {
 			System.err.println("Something went wrong while accepting clients");
 			e.printStackTrace();
 		}
+	}
+
+	public void stop() {
+		if (running) running = false;
 	}
 	
 	public void broadcast(Command cmd) {
@@ -67,5 +47,17 @@ public class Server {
 			}
 		}
 	}
-	
+
+	public static void main(String[] args) {
+		try {
+			ServerSocket serverSocket = new ServerSocket(LISTEN_PORT);
+			Server server = new Server(serverSocket);
+			server.start();
+		} catch (IOException e) {
+			System.err.println("Could not open socket");
+		} catch (Exception e) {
+			System.err.println("Unhandled exception!");
+			e.printStackTrace();
+		}
+	}
 }
