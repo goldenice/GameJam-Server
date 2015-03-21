@@ -15,7 +15,7 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.util.Map;
 
-public class Client implements Runnable {
+public class Client extends Entity implements Runnable {
 	
 	private Socket socket;
     private Server server;
@@ -30,6 +30,7 @@ public class Client implements Runnable {
 	private boolean running;
 	
 	public Client(Socket socket, Server server) {
+		super("Client");
 		this.socket = socket;
         this.server = server;
 		try {
