@@ -14,7 +14,7 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.util.Map;
 
-public class Client implements Runnable {
+public class Client extends Entity implements Runnable {
 	
 	private Socket socket;
 	private BufferedReader in;
@@ -28,6 +28,7 @@ public class Client implements Runnable {
 	private boolean running;
 	
 	public Client(Socket socket) {
+		super("Client");
 		this.socket = socket;
 		try {
 			this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
