@@ -2,8 +2,8 @@ package gamejam.server.objects.nonphysical;
 
 import gamejam.server.Command;
 import gamejam.server.IncomingCommandHandler;
-import gamejam.server.objects.GameObject;
-import gamejam.server.objects.PhysicalObject;
+import gamejam.server.objects.Entity;
+import gamejam.server.objects.PhysicalEntity;
 import gamejam.server.objects.World;
 
 import java.io.BufferedReader;
@@ -23,7 +23,7 @@ public class Client implements Runnable {
 	
 	private String username;
 	private int identifier;
-	private NonPhysical user;
+	private SpiritualEntity user;
 
 	private boolean running;
 	
@@ -73,19 +73,19 @@ public class Client implements Runnable {
 		this.username = username;
 	}
 	
-	public void sendAllObjects() {
-		Map<Integer, GameObject> map = World.getInstance().getMap();
+	public void sendAllEntities() {
+		Map<Integer, Entity> map = World.getInstance().getEntityMap();
 		for (Integer key : map.keySet()) {
-			GameObject obj = map.get(key);
-			if (obj instanceof PhysicalObject) {
-				PhysicalObject phys = (PhysicalObject) obj;
+			Entity entity = map.get(key);
+			if (entity instanceof PhysicalEntity) {
+				PhysicalEntity physical = (PhysicalEntity) entity;
 				Command command = new Command(Command.CommandType.OBJECT);
 				command = command
-						.addArgument(Integer.toString(phys.getObjectId()))
-						.addArgument(phys.getType())
-						.addArgument(Float.toString(phys.getX()))
-						.addArgument(Float.toString(phys.getY()))
-						.addArgument(Float.toString(phys.getZ()));
+						.addArgument(Integer.toString(physical.getObjectId()))
+						.addArgument(physical.getType())
+						.addArgument(Float.toString(physical.getX()))
+						.addArgument(Float.toString(physical.getY()))
+						.addArgument(Float.toString(physical.getZ()));
 				try {
 					send(command);
 				} catch (IOException e) {

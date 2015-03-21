@@ -17,7 +17,7 @@ public class IncomingCommandHandler {
 				if (arguments != null && arguments.length == 1) {
 					String username = arguments[0];
 					client.setUsername(username);
-					client.sendAllObjects();
+					client.sendAllEntities();
 				} else {
 					throw new IllegalArgumentException();
 				}
