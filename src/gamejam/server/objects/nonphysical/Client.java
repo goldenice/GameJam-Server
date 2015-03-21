@@ -16,20 +16,22 @@ import java.util.Map;
 
 public class Client implements Runnable {
 	
-	private Socket sock;
+	private Socket socket;
 	private BufferedReader in;
 	private BufferedWriter out;
 	private IncomingCommandHandler ich;
 	
 	private String username;
-	private int obj_id;
+	private int identifier;
 	private NonPhysical user;
+
+	private boolean running;
 	
-	public Client(Socket sock) {
-		this.sock = sock;
+	public Client(Socket socket) {
+		this.socket = socket;
 		try {
-			this.in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
-			this.out = new BufferedWriter(new OutputStreamWriter(sock.getOutputStream()));	
+			this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			this.out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 			this.ich = new IncomingCommandHandler(this);
 		} catch (IOException e) {
 			System.err.println("Something went wrong while opening a client socket");
@@ -39,31 +41,26 @@ public class Client implements Runnable {
 
 	@Override
 	public void run() {
+		running = true;
 		try {
-			while (true) {
-				String input = null;
-				while (true) {
-					if ((input = in.readLine()) != null) {
-						System.out.println("INPUT: " + input);
-						Command cmd = parseInput(input);
-						if (cmd != null) {
-							Command out = null;
-							if ((out = ich.handle(cmd)) != null) {
-								send(out);
-							}
-						}
+			while (running) {
+				String line = in.readLine();
+				if (line != null) {
+					try {
+						System.out.println(line);
+						Command command = Command.parseCommand(line);
+						Command out = ich.handle(command);
+						if (out != null) send(out);
+					} catch (IllegalArgumentException e) {
+						System.err.println("Received illegal input from client thread.");
 					}
 				}
 			}
-		} catch (Exception e) {
+		} catch (IOException e) {
 			System.err.println("Something went wrong while reading from socket");
 			e.printStackTrace();
 			this.close();
 		}
-	}
-	
-	public Command parseInput(String input) {
-		return Command.parseCommand(input);
 	}
 	
 	public void send(Command input) throws IOException {
@@ -82,16 +79,16 @@ public class Client implements Runnable {
 			GameObject obj = map.get(key);
 			if (obj instanceof PhysicalObject) {
 				PhysicalObject phys = (PhysicalObject) obj;
-				Command cmd = new Command(Command.Cmd.OBJECT);
-				cmd = cmd
-						.addArgument(new Integer(phys.getObjectId()).toString())
+				Command command = new Command(Command.CommandType.OBJECT);
+				command = command
+						.addArgument(Integer.toString(phys.getObjectId()))
 						.addArgument(phys.getType())
-						.addArgument(new Float(phys.getX()).toString())
-						.addArgument(new Float(phys.getY()).toString())
-						.addArgument(new Float(phys.getZ()).toString());
+						.addArgument(Float.toString(phys.getX()))
+						.addArgument(Float.toString(phys.getY()))
+						.addArgument(Float.toString(phys.getZ()));
 				try {
-					send(cmd);
-				} catch (Exception e) {
+					send(command);
+				} catch (IOException e) {
 					System.err.println("Something went wrong while sending all objects to the client");
 					e.printStackTrace();
 				}
@@ -102,7 +99,7 @@ public class Client implements Runnable {
 	public void close() {
 		try {
 			in.close();
-			sock.close();
+			socket.close();
 		} catch (IOException e) {
 			System.err.println("Errors closing the connection with a client");
 			e.printStackTrace();
