@@ -1,71 +1,71 @@
 package gamejam.server;
 
+import java.util.Arrays;
 
-/**
- * This class is immutable!
- * @author Rick Lubbers
- *
- */
 public class Command {
-	
-	public class Cmd {
-		public static final String CONNECT = "CONNECT";
-		public static final String OBJECT = "OBJECT";
-		public static final String CHAT = "CHAT";
+
+	public enum CommandType {
+		CONNECT, OBJECT, CHAT;
 	}
-	
-	public static final String[] CMDS = { Cmd.CONNECT, Cmd.OBJECT, Cmd.CHAT };
-	private String cmd;
-	private String[] args;
-	
-	public Command(String cmd) {
-		this.cmd = cmd;
+
+	private CommandType command;
+	private String[] arguments;
+
+	public Command(CommandType command) {
+		this(command, null);
 	}
-	
-	public Command(String cmd, String[] args) {
-		this(cmd);
-		this.args = args;
+
+	public Command(CommandType command, String[] arguments) {
+		this.command = command;
+		this.arguments = arguments;
 	}
-	
-	public String getCmd() {
-		return cmd;
+
+	public CommandType getCommand() {
+		return command;
 	}
-	
-	public String[] getArgs() {
-		return args;
+
+	public String[] getArguments() {
+		return arguments;
 	}
-	
-	public Command addArgument(String arg) {
-		String[] newargs = new String[args.length + 1];
-		System.arraycopy(args, 0, newargs, 0, args.length);
-		newargs[newargs.length - 1] = arg;
-		return new Command(cmd, newargs);
+
+	public Command addArgument(String argument) {
+		String[] temp = arguments;
+		arguments = new String[temp.length + 1];
+		System.arraycopy(temp, 0, arguments, 0, temp.length);
+		arguments[arguments.length - 1] = argument;
+        return this;
 	}
-	
-	public static Command parseCommand(String input) {
-		String[] parts = input.split("\\s+");
-		boolean valid = false;
-		for (int i = 0; i < CMDS.length; i++) {
-			if (CMDS[i].equals(parts[0])) {
-				valid = true;
-				break;
-			}
-		}
-		if (valid) {
-			return new Command(parts[0]);
-		} else {
-			return null;
-		}
-	}
-	
+
 	public String toString() {
-		String output = cmd;
-		if (args != null) {
-			for (int i = 0; i < args.length; i++) {
-				output += " " + args[i];
+		String result = command.name();
+		if (arguments != null) {
+			for (String argument : arguments) {
+				result += String.format(" %s", argument);
 			}
 		}
-		return output;
+		return result;
 	}
-	
+
+	public static Command parseCommand(String line) throws IllegalArgumentException {
+		String[] words = line.split("\\s");
+
+        CommandType type = null;
+        for (CommandType c : CommandType.values()) {
+            if (c.name().equals(words[0])) {
+                type = c;
+            }
+        }
+
+        if (type != null) {
+            Command result;
+            if (words.length > 1) {
+                result = new Command(type, Arrays.copyOfRange(words, 1, words.length));
+            } else {
+                result = new Command(type);
+            }
+            return result;
+        }
+
+        throw new IllegalArgumentException();
+	}
 }
