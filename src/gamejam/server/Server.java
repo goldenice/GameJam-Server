@@ -23,7 +23,7 @@ public class Server {
 		try {
 			while (running) {
 				Socket sock = serverSocket.accept();
-				Client client = new Client(sock);
+				Client client = new Client(sock, this);
 				new Thread(client).start();
 				clients.add(client);
 			}

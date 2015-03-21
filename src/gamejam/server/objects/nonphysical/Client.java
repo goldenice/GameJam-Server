@@ -2,6 +2,7 @@ package gamejam.server.objects.nonphysical;
 
 import gamejam.server.Command;
 import gamejam.server.IncomingCommandHandler;
+import gamejam.server.Server;
 import gamejam.server.objects.Entity;
 import gamejam.server.objects.PhysicalEntity;
 import gamejam.server.objects.World;
@@ -17,6 +18,7 @@ import java.util.Map;
 public class Client implements Runnable {
 	
 	private Socket socket;
+    private Server server;
 	private BufferedReader in;
 	private BufferedWriter out;
 	private IncomingCommandHandler ich;
@@ -27,8 +29,9 @@ public class Client implements Runnable {
 
 	private boolean running;
 	
-	public Client(Socket socket) {
+	public Client(Socket socket, Server server) {
 		this.socket = socket;
+        this.server = server;
 		try {
 			this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			this.out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
@@ -38,6 +41,18 @@ public class Client implements Runnable {
 			e.printStackTrace();
 		}
 	}
+
+    public void setIdentifier(int identifier){
+        this.identifier = identifier;
+    }
+
+    public int getIdentifier(){
+        return identifier;
+    }
+
+    public Server getServer(){
+        return this.server;
+    }
 
 	@Override
 	public void run() {
@@ -85,7 +100,10 @@ public class Client implements Runnable {
 						.addArgument(physical.getType())
 						.addArgument(Float.toString(physical.getX()))
 						.addArgument(Float.toString(physical.getY()))
-						.addArgument(Float.toString(physical.getZ()));
+						.addArgument(Float.toString(physical.getZ()))
+                        .addArgument(Float.toString(physical.getPitch()))
+                        .addArgument(Float.toString(physical.getYaw()))
+                        .addArgument(Float.toString(physical.getRoll()));
 				try {
 					send(command);
 				} catch (IOException e) {
