@@ -1,5 +1,7 @@
 package gamejam.server;
 
+import gamejam.server.objects.nonphysical.Client;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -8,16 +10,17 @@ import java.util.ArrayList;
 import lombok.Getter;
 
 public class Main {
+
+	/******************* MAGIC STATIC LINE *******************/
 	
-	private ServerSocket server;
-	private ArrayList<Client> clients;
-	private boolean execute = true;
+	private static Main main;
 	
 	public static void main(String[] args) {
 		ServerSocket server;
 		try {
 			server = new ServerSocket(6969);
-			new Main(server).listen();
+			Main.main = new Main(server);
+			Main.main.listen();
 		} catch (IOException e) {
 			System.err.println("Could not open socket");
 		} catch (Exception e) {
@@ -26,9 +29,21 @@ public class Main {
 		}
 	}
 	
+	public static Main getServer() {
+		return Main.main;
+	}
+	
+
+	/******************* END MAGIC STATIC LINE ***************/
+	
+	
 	public Main(ServerSocket server) {
 		this.server = server;
 	}
+	
+	private ServerSocket server;
+	private ArrayList<Client> clients = new ArrayList<Client>();
+	private boolean execute = true;
 	
 	public void listen() {
 		try {
@@ -41,6 +56,17 @@ public class Main {
 		} catch (IOException e) {
 			System.err.println("Something went wrong while accepting clients");
 			e.printStackTrace();
+		}
+	}
+	
+	public void broadcast(Command cmd) {
+		for (Client c : clients) {
+			try {
+				c.send(cmd);
+			} catch (IOException e) {
+				System.err.println("Something went wrong while broadcasting to a client");
+				e.printStackTrace();
+			}
 		}
 	}
 	

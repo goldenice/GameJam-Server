@@ -12,11 +12,11 @@ public class Command {
 	
 	public class Cmd {
 		public static final String CONNECT = "CONNECT";
-		public static final String UPDATE = "UPDATE";
+		public static final String OBJECT = "OBJECT";
 		public static final String CHAT = "CHAT";
 	}
 	
-	public static final String[] CMDS = { Cmd.CONNECT, Cmd.UPDATE, Cmd.CHAT };
+	public static final String[] CMDS = { Cmd.CONNECT, Cmd.OBJECT, Cmd.CHAT };
 	private String cmd;
 	private String[] args;
 	
