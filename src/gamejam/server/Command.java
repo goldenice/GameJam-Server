@@ -5,10 +5,10 @@ import java.util.Arrays;
 public class Command {
 
 	public enum CommandType {
-		CONNECT, OBJECT, CHAT;
+		CONNECT, OBJECT, CHAT
 	}
 
-	private CommandType command;
+	private final CommandType command;
 	private String[] arguments;
 
 	public Command(CommandType command) {
@@ -20,7 +20,7 @@ public class Command {
 		this.arguments = arguments;
 	}
 
-	public CommandType getCommand() {
+	public CommandType getCommandType() {
 		return command;
 	}
 
