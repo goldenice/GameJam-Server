@@ -29,7 +29,7 @@ public class Command {
 	}
 
 	public Command addArgument(String argument) {
-		String[] temp = arguments;
+        String[] temp = arguments == null ? new String[0] : arguments;
 		arguments = new String[temp.length + 1];
 		System.arraycopy(temp, 0, arguments, 0, temp.length);
 		arguments[arguments.length - 1] = argument;
