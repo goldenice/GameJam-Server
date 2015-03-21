@@ -7,20 +7,18 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
-import lombok.Getter;
-
-public class Main {
+public class Server {
 
 	/******************* MAGIC STATIC LINE *******************/
 	
-	private static Main main;
+	private static Server main;
 	
 	public static void main(String[] args) {
 		ServerSocket server;
 		try {
 			server = new ServerSocket(6969);
-			Main.main = new Main(server);
-			Main.main.listen();
+			Server.main = new Server(server);
+			Server.main.listen();
 		} catch (IOException e) {
 			System.err.println("Could not open socket");
 		} catch (Exception e) {
@@ -29,15 +27,15 @@ public class Main {
 		}
 	}
 	
-	public static Main getServer() {
-		return Main.main;
+	public static Server getServer() {
+		return Server.main;
 	}
 	
 
 	/******************* END MAGIC STATIC LINE ***************/
 	
 	
-	public Main(ServerSocket server) {
+	public Server(ServerSocket server) {
 		this.server = server;
 	}
 	

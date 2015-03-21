@@ -1,7 +1,5 @@
 package gamejam.server;
 
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * This class is immutable!
@@ -48,7 +46,7 @@ public class Command {
 		String[] parts = input.split("\\s+");
 		boolean valid = false;
 		for (int i = 0; i < CMDS.length; i++) {
-			if (CMDS[i] == parts[0]) {
+			if (CMDS[i].equals(parts[0])) {
 				valid = true;
 				break;
 			}
@@ -62,8 +60,10 @@ public class Command {
 	
 	public String toString() {
 		String output = cmd;
-		for (int i = 0; i < args.length; i++) {
-			output += " " + args[i];
+		if (args != null) {
+			for (int i = 0; i < args.length; i++) {
+				output += " " + args[i];
+			}
 		}
 		return output;
 	}
