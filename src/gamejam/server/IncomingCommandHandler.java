@@ -64,6 +64,9 @@ public class IncomingCommandHandler {
             }
 
                 }
+            case QUIT: {
+                client.close();
+            }
                 break;
 		}
 		return null;
