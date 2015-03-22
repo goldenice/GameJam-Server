@@ -121,6 +121,7 @@ public class Client extends Entity implements Runnable {
 	
 	public void close() {
 		try {
+            World.getInstance().getEntityMap().remove(identifier);
 			in.close();
 			socket.close();
 		} catch (IOException e) {

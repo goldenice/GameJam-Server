@@ -54,7 +54,7 @@ public class IncomingCommandHandler {
                         physical.updatePosition(Float.parseFloat(arguments[0]), Float.parseFloat(arguments[1]), Float.parseFloat(arguments[2]));
                         ((PhysicalEntity)World.getInstance().getEntityById(client.getIdentifier())).updateRotation(Float.parseFloat(arguments[3]), Float.parseFloat(arguments[4]), Float.parseFloat(arguments[5]));
 
-                        Command command = new Command(Command.CommandType.OBJECT);
+                        Command command = new Command(Command.CommandType.UPDATE);
                         command = command
                                 .addArgument(Integer.toString(physical.getObjectId()))
                                 .addArgument(physical.getType())
@@ -64,10 +64,12 @@ public class IncomingCommandHandler {
                                 .addArgument(Float.toString(physical.getPitch()))
                                 .addArgument(Float.toString(physical.getYaw()))
                                 .addArgument(Float.toString(physical.getRoll()));
+
                         client.getServer().broadcast(command);
                     } else {
                 throw new IllegalArgumentException();
-            }
+                }
+                break;
 
                 }
             case QUIT: {
