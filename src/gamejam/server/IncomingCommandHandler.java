@@ -21,7 +21,7 @@ public class IncomingCommandHandler {
 					String username = arguments[0];
 					client.setUsername(username);
                     Ship ship = new Ship(0,0,0,0,0,0);
-                    int id = World.getInstance().register(ship);
+                    int id = ship.getObjectId();
                     PhysicalEntity physical = ship;
                     Command command = new Command(Command.CommandType.OBJECT);
                     command = command

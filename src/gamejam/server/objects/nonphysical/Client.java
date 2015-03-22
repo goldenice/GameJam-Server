@@ -4,6 +4,7 @@ import gamejam.server.Command;
 import gamejam.server.IncomingCommandHandler;
 import gamejam.server.Server;
 import gamejam.server.objects.Entity;
+import gamejam.server.objects.Meteor;
 import gamejam.server.objects.PhysicalEntity;
 import gamejam.server.objects.World;
 
@@ -105,6 +106,9 @@ public class Client extends Entity implements Runnable {
                         .addArgument(Float.toString(physical.getPitch()))
                         .addArgument(Float.toString(physical.getYaw()))
                         .addArgument(Float.toString(physical.getRoll()));
+                if(entity instanceof Meteor){
+                    command.addArgument(Float.toString(((Meteor) physical).getSize()));
+                }
 				try {
 					send(command);
 				} catch (IOException e) {

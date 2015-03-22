@@ -6,6 +6,7 @@ import java.util.Map;
 public class World {
 
 	private static World instance = null;
+    private static MeteorFactory meteorFactory;
 
 	public static World getInstance() {
 		if (instance == null) {
@@ -22,7 +23,8 @@ public class World {
 	private int cursor = 0;
 
 	private void init() {
-		new PhysicalEntity("EmptyEntity", 0, 0, 0);
+        meteorFactory = new MeteorFactory();
+        meteorFactory.generateMeteors();
 	}
 
 	public int register(Entity entity) {
