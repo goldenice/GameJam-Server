@@ -5,8 +5,10 @@ package gamejam.server.objects;
  */
 public class Ship extends PhysicalEntity {
     public static final String CLASS_NAME = "Ship";
+    public String username;
 
-    public Ship(float x, float y, float z, float yaw, float pitch, float roll) {
+    public Ship(float x, float y, float z, float yaw, float pitch, float roll, String username) {
         super(CLASS_NAME, x, y, z, yaw, pitch, roll);
+        this.username = username;
     }
 }

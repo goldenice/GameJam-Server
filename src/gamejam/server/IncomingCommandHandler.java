@@ -5,6 +5,8 @@ import gamejam.server.objects.Ship;
 import gamejam.server.objects.World;
 import gamejam.server.objects.nonphysical.Client;
 
+import java.io.IOException;
+
 public class IncomingCommandHandler {
 
 	private Client client;
@@ -20,7 +22,8 @@ public class IncomingCommandHandler {
 				if (arguments != null && arguments.length == 1) {
 					String username = arguments[0];
 					client.setUsername(username);
-                    Ship ship = new Ship(0,0,0,0,0,0);
+                    client.sendAllEntities();
+                    Ship ship = new Ship(0,0,0,0,0,0, username);
                     int id = ship.getObjectId();
                     PhysicalEntity physical = ship;
                     Command command = new Command(Command.CommandType.OBJECT);
@@ -33,10 +36,13 @@ public class IncomingCommandHandler {
                             .addArgument(Float.toString(physical.getPitch()))
                             .addArgument(Float.toString(physical.getYaw()))
                             .addArgument(Float.toString(physical.getRoll()));
+                    try {
+                        client.send(new Command(Command.CommandType.CONTROL, new String[]{Integer.toString(id)}));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     client.getServer().broadcast(command);
-
                     client.setIdentifier(id);
-					client.sendAllEntities();
 				} else {
 					throw new IllegalArgumentException();
 				}}

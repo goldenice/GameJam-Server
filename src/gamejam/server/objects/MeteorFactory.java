@@ -8,7 +8,7 @@ import java.util.Random;
  */
 public class MeteorFactory {
     private ArrayList<Meteor> meteors;
-    public static final int METEOR_NUM = 5000;
+    public static final int METEOR_NUM = 1;//5000;
     public static final float CREATION_SCALE = 3000;
 
 
